@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andes Capital Demo</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#0f172a; color:white; }
+header { background:#020617; padding:15px; display:flex; justify-content:space-between; }
+nav a { color:white; margin:0 10px; text-decoration:none; }
+.container { padding:20px; }
+input { padding:10px; margin:5px; width:200px; }
+button { padding:10px 20px; background:#22c55e; border:none; color:white; border-radius:5px; cursor:pointer; }
+.card { background:#1e293b; padding:20px; border-radius:10px; margin:10px 0; }
+.hidden { display:none; }
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Andes Capital</h2>
+<nav>
+<a href="#" onclick="show('home')">Inicio</a>
+<a href="#" onclick="show('login')">Login</a>
+<a href="#" onclick="show('panel')">Panel</a>
+</nav>
+</header>
+
+<div class="container">
+
+<div id="home">
+<h1>Invierte y gana</h1>
+<p>Plataforma demo educativa</p>
+</div>
+
+<div id="login" class="hidden">
+<h2>Registro / Login</h2>
+<input type="text" id="user" placeholder="Usuario"><br>
+<input type="password" id="pass" placeholder="Contraseña"><br>
+<button onclick="register()">Registrarse</button>
+<button onclick="login()">Ingresar</button>
+</div>
+
+<div id="panel" class="hidden">
+<h2>Panel de Usuario</h2>
+<p>Saldo: S/ <span id="saldo">0</span></p>
+
+<div class="card">
+<h3>Invertir S/10</h3>
+<button onclick="invertir(10)">Invertir</button>
+</div>
+
+<div class="card">
+<h3>Retirar</h3>
+<button onclick="retirar()">Retirar ganancias</button>
+</div>
+</div>
+
+</div>
+
+<script>
+let currentUser = null;
+
+function show(section) {
+ document.querySelectorAll('#home,#login,#panel').forEach(div=>div.classList.add('hidden'));
+ document.getElementById(section).classList.remove('hidden');
+}
+
+function register(){
+ let u = document.getElementById('user').value;
+ let p = document.getElementById('pass').value;
+ localStorage.setItem(u, JSON.stringify({pass:p, saldo:0}));
+ alert('Registrado');
+}
+
+function login(){
+ let u = document.getElementById('user').value;
+ let p = document.getElementById('pass').value;
+ let data = JSON.parse(localStorage.getItem(u));
+ if(data && data.pass===p){
+  currentUser=u;
+  document.getElementById('saldo').textContent=data.saldo;
+  show('panel');
+ } else alert('Error');
+}
+
+function invertir(monto){
+ let data = JSON.parse(localStorage.getItem(currentUser));
+ data.saldo += monto * 1.2;
+ localStorage.setItem(currentUser, JSON.stringify(data));
+ document.getElementById('saldo').textContent=data.saldo;
+}
+
+function retirar(){
+ let data = JSON.parse(localStorage.getItem(currentUser));
+ alert('Retiraste S/ ' + data.saldo);
+ data.saldo=0;
+ localStorage.setItem(currentUser, JSON.stringify(data));
+ document.getElementById('saldo').textContent=0;
+}
+</script>
+
+</body>
+</html>
